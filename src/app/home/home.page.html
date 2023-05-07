@@ -15,5 +15,13 @@
 </ion-header>
 
 <ion-content>
-  <!-- Content goes here -->
+  <div class="projects-container">
+    <div
+      *ngFor="let project of projects"
+      class="project-node"
+      (click)="onProjectClick(project)"
+    >
+      <p>{{ project.title }}</p>
+    </div>
+  </div>
 </ion-content>

@@ -1,0 +1,41 @@
+<ion-toolbar>
+  <ion-title>Edit</ion-title>
+  <ion-buttons slot="end">
+    <ion-button (click)="dismiss()">
+      <ion-icon name="close"></ion-icon>
+    </ion-button>    
+  </ion-buttons>
+</ion-toolbar>
+<ion-content>
+  <div class=" ">
+    <ion-button (click)="captureImage()" fill="clear">
+      <ion-icon name="camera-outline"></ion-icon>
+    </ion-button>
+    <ion-button (click)="pickImage()" fill="clear">
+      <ion-icon name="image-outline"></ion-icon>
+    </ion-button>
+    <ion-button (click)="captureFilm()" fill="clear">
+      <ion-icon name="videocam-outline"></ion-icon>
+    </ion-button>
+    <ion-button (click)="captureSound()" fill="clear">
+      <ion-icon name="mic-outline"></ion-icon>
+    </ion-button>
+    <ion-button (click)="getFile()" fill="clear">
+      <ion-icon name="attach-outline"></ion-icon>
+    </ion-button>
+    <ion-button (click)="getCanvas()" fill="clear">
+      <ion-icon name="color-palette-outline"></ion-icon>
+    </ion-button>
+    <ion-button (click)="getEditor()" fill="clear">
+      <ion-icon name="document-text-outline"></ion-icon>
+    </ion-button>
+  </div>
+  <div>
+    <ion-input placeholder="Title"></ion-input>
+  </div>
+  <img *ngIf="capturedImage" [src]="capturedImage" alt="Captured Image" />
+
+  <div class="save-button-container">
+    <ion-button (click)="dismiss()">Save</ion-button>
+  </div>
+</ion-content>

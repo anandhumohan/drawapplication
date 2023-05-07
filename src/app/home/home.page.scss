@@ -25,3 +25,37 @@
 #container a {
   text-decoration: none;
 }
+
+.projects-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start; // Change this from 'center' to 'flex-start' for left alignment
+}
+
+.project-node {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4px solid black; // Increase the border thickness from 1px to 4px
+  border-radius: 50%;
+  width: calc(100% / 3 - 20px);
+  height: auto;
+  padding-top: calc(100% / 3 - 20px);
+  position: relative;
+  margin: 10px;
+  box-sizing: border-box;
+  cursor: pointer;
+  text-align: center;
+}
+
+.project-node p {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  margin: 0;
+  padding: 0;
+  word-wrap: break-word;
+}
+

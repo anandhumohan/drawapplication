@@ -11,6 +11,11 @@ const routes: Routes = [
     redirectTo: 'home',
     pathMatch: 'full'
   },
+  {
+    path: 'project-view/:id',
+    loadChildren: () => import('./project-view/project-view.module').then( m => m.ProjectViewPageModule)
+  },
+  
 ];
 
 @NgModule({
