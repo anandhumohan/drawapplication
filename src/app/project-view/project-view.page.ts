@@ -26,9 +26,12 @@ export class ProjectViewPage implements OnInit {
     console.log('Plus button clicked');
     // Implement the logic for the plus button click
   }
-  async presentSubNodeCreation() {
+  async presentSubNodeCreation(projectTitle: string) {
     const modal = await this.modalController.create({
-      component: SubNodeCreationComponent
+      component: SubNodeCreationComponent,
+      componentProps: {
+        projectTitle: projectTitle
+      }
     });
     return await modal.present();
   }

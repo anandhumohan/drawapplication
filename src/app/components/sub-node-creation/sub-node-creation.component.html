@@ -31,11 +31,11 @@
     </ion-button>
   </div>
   <div>
-    <ion-input placeholder="Title"></ion-input>
+    <ion-input placeholder="Title" [(ngModel)]="subNodeTitle"></ion-input>
   </div>
   <img *ngIf="capturedImage" [src]="capturedImage" alt="Captured Image" />
 
   <div class="save-button-container">
-    <ion-button (click)="dismiss()">Save</ion-button>
+    <ion-button (click)="createSubNode()">Save</ion-button>
   </div>
 </ion-content>
