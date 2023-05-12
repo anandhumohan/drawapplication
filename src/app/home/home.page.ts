@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
@@ -10,10 +10,14 @@ import { Router } from '@angular/router';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage {
+export class HomePage implements OnInit{
 
   projects: { id: string; title: string }[] = [];
   constructor(private alertController: AlertController, private http: HttpClient, private router: Router) {}
+
+  ngOnInit() {
+    this.getProjects();
+  }
 
   onProjectNodeClick(projectId: string) {
     this.router.navigate(['/next-page', { projectId }]); // Replace '/next-page' with your actual route
@@ -21,6 +25,40 @@ export class HomePage {
   onProjectClick(project: { id: string; title: string }) {
     this.router.navigate(['/project-view', project.id]);
   }
+
+
+
+  async getProjects() {
+    const fusekiUrl = 'http://localhost:3030/knowledge/query';
+  
+    const query = `
+      PREFIX : <http://www.indigenousknowledge.org/anandhu/ontologies/>
+      SELECT ?id ?title WHERE {
+        ?s a :Parent_Node ;
+          :id ?id ;
+          :title ?title .
+      }
+    `;
+  
+    try {
+      const response$ = this.http
+        .get<any>(fusekiUrl, {
+          params: { query },
+          headers: { Accept: 'application/sparql-results+json' },
+          observe: 'response',
+        });
+      const response = await firstValueFrom(response$);
+      this.projects = response.body!.results.bindings.map((binding: any) => ({
+        id: binding.id.value,
+        title: binding.title.value,
+      }));
+      console.log('Projects loaded:', this.projects);
+    } catch (error) {
+      console.error('Error loading projects:', error);
+      throw new Error('Failed to load projects');
+    }
+  }
+  
 
   async onPlusButtonClick() {
     const alert = await this.alertController.create({
