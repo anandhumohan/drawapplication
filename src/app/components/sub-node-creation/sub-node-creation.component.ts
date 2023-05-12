@@ -4,6 +4,8 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { HttpClient } from '@angular/common/http';
 
 import { HttpHeaders } from '@angular/common/http';
+import { HttpResponse } from '@angular/common/http';
+
 
 
 
@@ -41,22 +43,84 @@ export class SubNodeCreationComponent implements OnInit {
     });
     this.capturedImage = image.dataUrl;
     if (image.dataUrl) {
-      //this.knowledgeResourcePath = await this.saveImage(image.dataUrl);
+      this.knowledgeResourcePath = await this.saveImage(image.dataUrl);
     } else {
       // Handle the case when image.dataUrl is undefined
       console.error('Image data URL is undefined');
     }
-    //this.knowledgeResourcePath = image.imagePath;
     // Do something with the captured image, for example, display it on the page
     console.log(image.webPath);
   }
-/*
   async saveImage(imageData: string) {
     const imageName = `image-${Date.now()}.jpg`;
-    await this.storage.set(imageName, imageData);
-    const imagePath = await this.storage.get(imageName);
-    return imagePath;
-  }*/
+    await this.storeInIndexedDB(imageName, imageData);
+    return imageName;
+  }
+
+  async storeInIndexedDB(imageName: string, imageData: string) {
+    const dbName = 'ImageDB';
+    const storeName = 'Images';
+  
+    return new Promise(async (resolve, reject) => {
+      const openRequest = indexedDB.open(dbName);
+  
+      openRequest.onupgradeneeded = function () {
+        const db = openRequest.result;
+        if (!db.objectStoreNames.contains(storeName)) {
+          db.createObjectStore(storeName);
+        }
+      };
+  
+      openRequest.onsuccess = function () {
+        const db = openRequest.result;
+        const transaction = db.transaction(storeName, 'readwrite');
+        const store = transaction.objectStore(storeName);
+  
+        const putRequest = store.put(imageData, imageName);
+  
+        putRequest.onsuccess = function () {
+          resolve(putRequest.result);
+        };
+  
+        putRequest.onerror = function () {
+          reject(putRequest.error);
+        };
+      };
+  
+      openRequest.onerror = function () {
+        reject(openRequest.error);
+      };
+    });
+  }
+
+  async getImageFromIndexedDB(imageName: string) {
+    const dbName = 'ImageDB';
+    const storeName = 'Images';
+  
+    return new Promise(async (resolve, reject) => {
+      const openRequest = indexedDB.open(dbName);
+  
+      openRequest.onsuccess = function () {
+        const db = openRequest.result;
+        const transaction = db.transaction(storeName, 'readonly');
+        const store = transaction.objectStore(storeName);
+  
+        const getRequest = store.get(imageName);
+  
+        getRequest.onsuccess = function () {
+          resolve(getRequest.result);
+        };
+  
+        getRequest.onerror = function () {
+          reject(getRequest.error);
+        };
+      };
+  
+      openRequest.onerror = function () {
+        reject(openRequest.error);
+      };
+    });
+  }
 
   pickImage() {
     // Pick image logic here
@@ -117,13 +181,43 @@ const headers = new HttpHeaders({
 });
 
 try {
-  await this.http.post(fusekiEndpoint, 'update=' + encodeURIComponent(query), { headers }).toPromise();
+  
+  try {
+    const response = await this.http.post(fusekiEndpoint, 'update=' + encodeURIComponent(query), { headers, responseType: 'text', observe: 'response' }).toPromise() as HttpResponse<Object>;
+  
+    if (response.headers.get('Content-Type') === 'application/json') {
+      try {
+        const jsonResponse = JSON.parse(response.body as string);
+        // Handle the JSON response
+      } catch (e) {
+        console.error('Error parsing JSON:', e);
+      }
+    } else {
+      const textResponse = response.body as string;
+      console.log('Response:', textResponse);
+      this.subNodeCreated.emit();
+      this.dismiss();
+    }
+  } catch (error) {
+    console.error('Error creating subnode:', error);
+    console.error('Error details:', JSON.stringify(error, null, 2));
+  }
+  
+  
+  
+
+
   // If the API call is successful, emit the event with the new subnode data
-  this.subNodeCreated.emit(subNodeData);
-  this.dismiss();
+  
+
+  // Create a new subnode and draw a straight line connecting the nodes
+  //this.createNewSubNode();
+
+  
 } catch (error) {
   console.error('Error creating subnode:', error);
 }
+
 
   }
 
