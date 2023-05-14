@@ -196,7 +196,7 @@ try {
       const textResponse = response.body as string;
       console.log('Response:', textResponse);
       this.subNodeCreated.emit();
-      this.dismiss();
+      this.modalController.dismiss(subNodeData);
     }
   } catch (error) {
     console.error('Error creating subnode:', error);
