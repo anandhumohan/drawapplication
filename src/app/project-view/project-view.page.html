@@ -1,31 +1,29 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/"></ion-back-button>
-    </ion-buttons>
-    <ion-title>{{ projectTitle }}</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
   <div class="project-container">
     <div class="project-circle">
       Project Title
-      <div class="plus-button-container" (click)="showSubNodeCreation = true" style="transform: rotate(0deg);">
-        <div class="plus-button">+</div>
-      </div>
-      <div class="plus-button-container" (click)="showSubNodeCreation = true" style="transform: rotate(90deg);">
-        <div class="plus-button">+</div>
-      </div>
-      <div class="plus-button-container" (click)="showSubNodeCreation = true" style="transform: rotate(180deg);">
-        <div class="plus-button">+</div>
-      </div>
-      <div class="plus-button-container" (click)="showSubNodeCreation = true" style="transform: rotate(270deg);">
+      <div class="plus-button-container" 
+           (click)="presentSubNodeCreation(projectTitle)">
         <div class="plus-button">+</div>
       </div>
     </div>
-  </div>
-  <div class="plus-button-container" (click)="presentSubNodeCreation(projectTitle)" style="transform: rotate(0deg);">
-    <div class="plus-button">+</div>
+    
+    <!-- Subnodes -->
+    <div *ngFor="let subNode of subNodes; let i = index" 
+     class="subnode" 
+     [style.left.px]="getX2(i) - 50"
+     [style.top.px]="getY2(i) - 50">
+  {{ subNode.title }}
+</div>
+
+    <!-- SVG container for the lines -->
+    <svg class="svg-container">
+      <!-- Lines -->
+      <line *ngFor="let subNode of subNodes; let i = index"
+        [attr.x1]="centerX + 100" [attr.y1]="centerY" 
+        [attr.x2]="getX2(i) - 50" [attr.y2]="getY2(i)" 
+        stroke="black" stroke-width="2"/>
+    </svg>
+    
   </div>
 </ion-content>
